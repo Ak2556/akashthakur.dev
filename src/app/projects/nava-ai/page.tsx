@@ -1,0 +1,138 @@
+'use client';
+
+import { useEffect, useState, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+
+export default function NavaAIPage() {
+    const fullIntro =
+        'Your AI-powered digital co-founder. Nava-AI helps solopreneurs validate startup ideas, store intelligent memory, and auto-generate weekly growth dashboards.';
+    const [typedText, setTypedText] = useState('');
+
+    useEffect(() => {
+        let i = 0;
+        const interval = setInterval(() => {
+            setTypedText(fullIntro.slice(0, i));
+            i++;
+            if (i > fullIntro.length) clearInterval(interval);
+        }, 45);
+        return () => clearInterval(interval);
+    }, []);
+
+    const heroRef = useRef(null);
+    const subRef = useRef(null);
+    const techRef = useRef(null);
+    const paraRef1 = useRef(null);
+    const paraRef2 = useRef(null);
+    const ctaRef = useRef(null);
+
+    const isHeroVisible = useInView(heroRef, { once: true, margin: '-20%' });
+    const isSubVisible = useInView(subRef, { once: true, margin: '-20%' });
+    const isTechVisible = useInView(techRef, { once: true, margin: '-20%' });
+    const isPara1Visible = useInView(paraRef1, { once: true, margin: '-20%' });
+    const isPara2Visible = useInView(paraRef2, { once: true, margin: '-20%' });
+    const isCTAVisible = useInView(ctaRef, { once: true, margin: '-20%' });
+
+    const transition = { duration: 2.5, ease: [0.22, 1, 0.36, 1] };
+
+    return (
+        <main className="min-h-screen px-6 py-28 md:py-36 text-white bg-black overflow-x-hidden">
+            <div className="max-w-4xl mx-auto space-y-16">
+                {/* Hero Title */}
+                <motion.h1
+                    ref={heroRef}
+                    className="text-4xl md:text-6xl font-extrabold tracking-tight leading-snug"
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isHeroVisible ? { opacity: 1, y: 0 } : {}}
+                    transition={transition}
+                >
+                    🧠 Nava-AI
+                </motion.h1>
+
+                {/* Typewriter Subheading */}
+                <motion.h2
+                    ref={subRef}
+                    className="text-xl md:text-2xl text-white/70 max-w-3xl whitespace-pre-wrap min-h-[4rem]"
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isSubVisible ? { opacity: 1, y: 0 } : {}}
+                    transition={transition}
+                >
+                    {typedText}
+                    <span className="text-primary animate-pulse">|</span>
+                </motion.h2>
+
+                {/* Tech Stack */}
+                <motion.div
+                    ref={techRef}
+                    className="flex flex-wrap gap-3"
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isTechVisible ? { opacity: 1, y: 0 } : {}}
+                    transition={transition}
+                >
+                    {[
+                        'FastAPI',
+                        'LangChain',
+                        'ChromaDB',
+                        'Docker',
+                        'OpenRouter',
+                        'pydantic-settings',
+                    ].map((tag) => (
+                        <span
+                            key={tag}
+                            className="bg-white/10 text-white text-sm px-3 py-1 rounded-full border border-white/20 backdrop-blur-sm"
+                        >
+                            #{tag}
+                        </span>
+                    ))}
+                </motion.div>
+
+                {/* Paragraphs */}
+                <motion.p
+                    ref={paraRef1}
+                    className="text-white/80 leading-relaxed max-w-3xl text-lg"
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isPara1Visible ? { opacity: 1, y: 0 } : {}}
+                    transition={transition}
+                >
+                    Nava-AI is currently a focused MVP — a streamlined AI chatbot with memory recall and OpenRouter-based LLM capabilities. Designed with the bare essentials to validate core use cases for founders, it already offers contextual conversations powered by embeddings and a robust backend architecture.
+                </motion.p>
+
+                <motion.p
+                    ref={paraRef2}
+                    className="text-white/70 max-w-3xl text-base"
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isPara2Visible ? { opacity: 1, y: 0 } : {}}
+                    transition={transition}
+                >
+                    While simple in scope, Nava-AI has the architecture of a future-ready SaaS. With the right team, investment, or integration roadmap, it could become a mainstream platform for startup founders seeking AI-powered planning, validation, and strategic insights — all via terminal-first precision and developer-first UX.
+                </motion.p>
+
+                {/* CTA Buttons */}
+                <motion.div
+                    ref={ctaRef}
+                    className="flex flex-wrap gap-4 mt-10"
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isCTAVisible ? { opacity: 1, y: 0 } : {}}
+                    transition={transition}
+                >
+                    <a
+                        href="https://github.com/ak2556/nava-ai"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-5 py-2.5 rounded-full bg-white text-black font-semibold hover:bg-white/80 transition-all duration-300"
+                    >
+                        View GitHub
+                    </a>
+
+                    <a
+                        href="https://hub.docker.com/u/ak2556"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-5 py-2.5 rounded-full bg-blue-500 text-white font-semibold hover:bg-blue-400 transition-all duration-300"
+                    >
+                        Docker Image
+                    </a>
+                </motion.div>
+            </div>
+        </main>
+    );
+}
