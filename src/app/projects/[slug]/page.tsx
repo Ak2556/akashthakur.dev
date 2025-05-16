@@ -1,15 +1,18 @@
 'use client';
 
-import type { PageProps } from 'next';        // ✅ official helper
 import { notFound } from 'next/navigation';
-import projects from '../';                  // ← default-exported array
+import projects from '../';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
 /* ------------------------------------------------------------------ */
-/*  Basic typings                                                     */
+/*  Local helper types                                                */
 /* ------------------------------------------------------------------ */
+type PageProps<Params extends Record<string, string>> = {
+  params: Params;
+};
+
 type Project = {
   slug: string;
   title: string;
@@ -20,16 +23,11 @@ type Project = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Helper card component (NOT exported)                              */
+/*  Card component (NOT exported)                                     */
 /* ------------------------------------------------------------------ */
-function ProjectCard({
-  title,
-  content,
-  link,
-  tags = [],
-}: Project) {
+function ProjectCard({ title, content, link, tags = [] }: Project) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
+  const isInView = useInView(ref, { once: true });
 
   return (
     <motion.div
@@ -73,8 +71,7 @@ function ProjectCard({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Dynamic route page (ONLY default export)                          */
-/*  — typed with PageProps so Next + TS are satisfied                 */
+/*  Dynamic route page (only default export)                          */
 /* ------------------------------------------------------------------ */
 export default function Page(
   { params }: PageProps<{ slug: string }>
