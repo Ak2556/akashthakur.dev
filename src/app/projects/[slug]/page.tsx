@@ -15,9 +15,7 @@ type Project = {
   delay?: number;
 };
 
-/* ------------------------------------------------------------------ */
-/*  Local card component (not exported)                               */
-/* ------------------------------------------------------------------ */
+/* ———————————————————  card (local, not exported) */
 function ProjectCard({ title, content, link, tags = [] }: Project) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
@@ -38,7 +36,7 @@ function ProjectCard({ title, content, link, tags = [] }: Project) {
 
       {tags.length > 0 && (
         <ul className="flex flex-wrap gap-2 mb-4">
-          {tags.map((tag) => (
+          {tags.map(tag => (
             <li
               key={tag}
               className="px-2 py-1 text-xs bg-white/20 rounded-full"
@@ -63,18 +61,11 @@ function ProjectCard({ title, content, link, tags = [] }: Project) {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  Dynamic route page — typed inline, no alias, no async             */
-/* ------------------------------------------------------------------ */
-export default function Page({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const project = projects.find(
-    (p: Project) => p.slug === params.slug
-  );
+/* ———————————————————  page (single default export) */
+type Props = { params: { slug: string } };
 
+export default function Page({ params }: Props) {
+  const project = projects.find(p => p.slug === params.slug);
   if (!project) notFound();
 
   return (
