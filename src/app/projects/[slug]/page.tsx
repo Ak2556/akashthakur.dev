@@ -70,7 +70,7 @@ function ScrollRevealCard({
 // Default page component
 
 
-export default function Page({ params }: any) {
+export default function Page({ params }) {
   const project = projects.find((p) => p.slug === params.slug);
   if (!project) {
     notFound();
