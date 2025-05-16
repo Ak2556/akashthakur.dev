@@ -1,10 +1,11 @@
 'use client';
-
+import { notFound } from 'next/navigation';
+import projects from '../';  // pulls from src/app/projects/index.ts
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { useRef } from 'react';
 
-export default function ScrollRevealCard({
+export function ScrollRevealCard({
   title,
   content,
   link,
@@ -57,4 +58,12 @@ export default function ScrollRevealCard({
   );
 
   return link ? <Link href={link}>{card}</Link> : card;
+}
+
+export default function Page({ params }: { params: { slug: string } }) {
+  const project = projects.find(p => p.slug === params.slug);
+  if (!project) {
+    notFound();
+  }
+  return <ScrollRevealCard {...project} />;
 }
