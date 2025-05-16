@@ -1,21 +1,21 @@
 'use client';
 
 import { notFound } from 'next/navigation';
-import projects from '../';               // imports from src/app/projects/index.ts
+import projects from '../';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { useRef } from 'react';
 
-interface Project {
+// Optional: add type safety for your project object
+type Project = {
   slug: string;
   title: string;
   content: string;
   link?: string;
   tags?: string[];
   delay?: number;
-}
+};
 
-// Local helper component — not exported
 function ScrollRevealCard({
   title,
   content,
@@ -67,11 +67,9 @@ function ScrollRevealCard({
   return link ? <Link href={link}>{card}</Link> : card;
 }
 
-// Default page component
-
-
-export default function Page({ params }) {
-  const project = projects.find((p) => p.slug === params.slug);
+// THIS SIGNATURE FIXES THE ERROR:
+export default function Page({ params }: { params: { slug: string } }) {
+  const project = projects.find((p: Project) => p.slug === params.slug);
   if (!project) {
     notFound();
   }
