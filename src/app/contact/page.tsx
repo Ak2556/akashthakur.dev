@@ -47,10 +47,10 @@ export default function ContactPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          Let's Collaborate 🤝
+          Don&apos;t hesitate to reach out!
         </motion.h1>
         <p className="text-center text-gray-400 mb-10">
-          Whether you're a founder, recruiter, or engineer — my inbox is open.
+          I&apos;m looking forward to hearing from you.
         </p>
 
         <form
