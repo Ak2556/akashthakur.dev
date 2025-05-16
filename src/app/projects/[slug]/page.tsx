@@ -6,13 +6,6 @@ import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 
-/* ------------------------------------------------------------------ */
-/*  Local helper types                                                */
-/* ------------------------------------------------------------------ */
-type PageProps<Params extends Record<string, string>> = {
-  params: Params;
-};
-
 type Project = {
   slug: string;
   title: string;
@@ -23,7 +16,7 @@ type Project = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Card component (NOT exported)                                     */
+/*  Local card component (not exported)                               */
 /* ------------------------------------------------------------------ */
 function ProjectCard({ title, content, link, tags = [] }: Project) {
   const ref = useRef<HTMLDivElement>(null);
@@ -71,11 +64,13 @@ function ProjectCard({ title, content, link, tags = [] }: Project) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Dynamic route page (only default export)                          */
+/*  Dynamic route page — typed inline, no alias, no async             */
 /* ------------------------------------------------------------------ */
-export default function Page(
-  { params }: PageProps<{ slug: string }>
-) {
+export default function Page({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const project = projects.find(
     (p: Project) => p.slug === params.slug
   );
