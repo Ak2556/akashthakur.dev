@@ -1,24 +1,29 @@
 'use client';
+
 import { notFound } from 'next/navigation';
-import projects from '../';  // pulls from src/app/projects/index.ts
+import projects from '../';               // imports from src/app/projects/index.ts
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { useRef } from 'react';
 
-export function ScrollRevealCard({
-  title,
-  content,
-  link,
-  tags = [],
-  delay = 0,
-}: {
+interface Project {
+  slug: string;
   title: string;
   content: string;
   link?: string;
   tags?: string[];
   delay?: number;
-}) {
-  const ref = useRef(null);
+}
+
+// Local helper component — not exported
+function ScrollRevealCard({
+  title,
+  content,
+  link,
+  tags = [],
+  delay = 0,
+}: Project) {
+  const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
 
   const card = (
@@ -44,26 +49,36 @@ export function ScrollRevealCard({
     >
       <h2 className="text-xl font-semibold text-primary mb-2">{title}</h2>
       <p className="text-white/90 leading-relaxed mb-3">{content}</p>
-      <div className="flex flex-wrap gap-2">
-        {tags.map((tag) => (
-          <span
-            key={tag}
-            className="text-xs bg-white/10 border border-white/20 px-2 py-1 rounded-full text-white/80"
-          >
-            #{tag}
-          </span>
-        ))}
-      </div>
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-xs bg-white/10 border border-white/20 px-2 py-1 rounded-full text-white/80"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 
   return link ? <Link href={link}>{card}</Link> : card;
 }
 
-export default function Page({ params }: { params: { slug: string } }) {
-  const project = projects.find(p => p.slug === params.slug);
+// Default page component
+
+
+export default function Page({ params }: any) {
+  const project = projects.find((p) => p.slug === params.slug);
   if (!project) {
     notFound();
   }
-  return <ScrollRevealCard {...project} />;
+
+  return (
+    <main className="px-4 py-12 max-w-4xl mx-auto">
+      <ScrollRevealCard {...project} />
+    </main>
+  );
 }
