@@ -1,10 +1,7 @@
 'use client';
 
 import { notFound } from 'next/navigation';
-import projects from '../';
-import { motion, useInView } from 'framer-motion';
-import Link from 'next/link';
-import { useRef } from 'react';
+import projects from '../'; // <- This must be a plain array!
 
 type Project = {
   slug: string;
@@ -15,65 +12,64 @@ type Project = {
   delay?: number;
 };
 
+// Minimal Project Card (safe to expand once working)
 function ScrollRevealCard({
   title,
   content,
   link,
   tags = [],
-  delay = 0,
 }: Project) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
-
-  const card = (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50, scale: 0.95, rotateX: -10 }}
-      animate={
-        isInView
-          ? {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              rotateX: 0,
-              transition: {
-                duration: 1.5,
-                delay,
-                ease: [0.25, 1, 0.5, 1],
-              },
-            }
-          : {}
-      }
-      className="bg-white/5 border border-white/10 p-6 rounded-xl shadow-xl hover:shadow-2xl hover:bg-white/10 transition-all duration-500 backdrop-blur-lg cursor-pointer"
+  return (
+    <div
+      style={{
+        padding: '2rem',
+        borderRadius: '1rem',
+        border: '1px solid #eee',
+        margin: '2rem auto',
+        maxWidth: 640,
+        background: 'rgba(255,255,255,0.05)',
+      }}
     >
-      <h2 className="text-xl font-semibold text-primary mb-2">{title}</h2>
-      <p className="text-white/90 leading-relaxed mb-3">{content}</p>
+      <h2 style={{ fontWeight: 'bold', fontSize: 28, marginBottom: 12 }}>{title}</h2>
+      <p style={{ color: '#ccc', marginBottom: 12 }}>{content}</p>
       {tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs bg-white/10 border border-white/20 px-2 py-1 rounded-full text-white/80"
-            >
+            <span key={tag} style={{
+              fontSize: 12,
+              background: '#111',
+              color: '#fff',
+              borderRadius: 12,
+              padding: '3px 10px'
+            }}>
               #{tag}
             </span>
           ))}
         </div>
       )}
-    </motion.div>
+      {link && (
+        <a href={link} target="_blank" rel="noopener noreferrer"
+          style={{
+            display: 'inline-block',
+            marginTop: 20,
+            color: '#00d8ff',
+            textDecoration: 'underline'
+          }}>
+          Visit Project
+        </a>
+      )}
+    </div>
   );
-
-  return link ? <Link href={link}>{card}</Link> : card;
 }
 
-// ✅ NO async/await, NO Promise, just plain function
+// FINAL, CORRECT DYNAMIC PAGE SIGNATURE!
 export default function Page({ params }: { params: { slug: string } }) {
   const project = projects.find((p: Project) => p.slug === params.slug);
   if (!project) {
     notFound();
   }
   return (
-    <main className="px-4 py-12 max-w-4xl mx-auto">
+    <main>
       <ScrollRevealCard {...project} />
     </main>
   );
