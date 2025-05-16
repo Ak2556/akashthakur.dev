@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+
 
 const SectionHeader = ({ title }: { title: string }) => (
   <motion.h2
