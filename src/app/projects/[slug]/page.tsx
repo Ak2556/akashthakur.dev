@@ -1,8 +1,15 @@
 'use client';
 
+import type { PageProps } from 'next';        // ✅ official helper
 import { notFound } from 'next/navigation';
-import projects from '../'; // <- This must be a plain array!
+import projects from '../';                  // ← default-exported array
+import Link from 'next/link';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 
+/* ------------------------------------------------------------------ */
+/*  Basic typings                                                     */
+/* ------------------------------------------------------------------ */
 type Project = {
   slug: string;
   title: string;
@@ -12,65 +19,75 @@ type Project = {
   delay?: number;
 };
 
-// Minimal Project Card (safe to expand once working)
-function ScrollRevealCard({
+/* ------------------------------------------------------------------ */
+/*  Helper card component (NOT exported)                              */
+/* ------------------------------------------------------------------ */
+function ProjectCard({
   title,
   content,
   link,
   tags = [],
 }: Project) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-10% 0px' });
+
   return (
-    <div
-      style={{
-        padding: '2rem',
-        borderRadius: '1rem',
-        border: '1px solid #eee',
-        margin: '2rem auto',
-        maxWidth: 640,
-        background: 'rgba(255,255,255,0.05)',
-      }}
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40, scale: 0.96 }}
+      animate={
+        isInView
+          ? { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8 } }
+          : {}
+      }
+      className="bg-white/10 border border-white/20 p-6 rounded-xl backdrop-blur-lg shadow-lg"
     >
-      <h2 style={{ fontWeight: 'bold', fontSize: 28, marginBottom: 12 }}>{title}</h2>
-      <p style={{ color: '#ccc', marginBottom: 12 }}>{content}</p>
+      <h2 className="text-2xl font-semibold mb-3">{title}</h2>
+      <p className="mb-4 text-white/90">{content}</p>
+
       {tags.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        <ul className="flex flex-wrap gap-2 mb-4">
           {tags.map((tag) => (
-            <span key={tag} style={{
-              fontSize: 12,
-              background: '#111',
-              color: '#fff',
-              borderRadius: 12,
-              padding: '3px 10px'
-            }}>
+            <li
+              key={tag}
+              className="px-2 py-1 text-xs bg-white/20 rounded-full"
+            >
               #{tag}
-            </span>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
+
       {link && (
-        <a href={link} target="_blank" rel="noopener noreferrer"
-          style={{
-            display: 'inline-block',
-            marginTop: 20,
-            color: '#00d8ff',
-            textDecoration: 'underline'
-          }}>
-          Visit Project
-        </a>
+        <Link
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline text-sky-400"
+        >
+          Visit&nbsp;project ↗
+        </Link>
       )}
-    </div>
+    </motion.div>
   );
 }
 
-// FINAL, CORRECT DYNAMIC PAGE SIGNATURE!
-export default function Page({ params }: { params: { slug: string } }) {
-  const project = projects.find((p: Project) => p.slug === params.slug);
-  if (!project) {
-    notFound();
-  }
+/* ------------------------------------------------------------------ */
+/*  Dynamic route page (ONLY default export)                          */
+/*  — typed with PageProps so Next + TS are satisfied                 */
+/* ------------------------------------------------------------------ */
+export default function Page(
+  { params }: PageProps<{ slug: string }>
+) {
+  const project = projects.find(
+    (p: Project) => p.slug === params.slug
+  );
+
+  if (!project) notFound();
+
   return (
-    <main>
-      <ScrollRevealCard {...project} />
+    <main className="max-w-3xl mx-auto px-4 py-12">
+      <ProjectCard {...project} />
     </main>
   );
 }
