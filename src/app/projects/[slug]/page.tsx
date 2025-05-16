@@ -6,7 +6,6 @@ import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { useRef } from 'react';
 
-// Optional: add type safety for your project object
 type Project = {
   slug: string;
   title: string;
@@ -67,13 +66,12 @@ function ScrollRevealCard({
   return link ? <Link href={link}>{card}</Link> : card;
 }
 
-// THIS SIGNATURE FIXES THE ERROR:
+// ✅ NO async/await, NO Promise, just plain function
 export default function Page({ params }: { params: { slug: string } }) {
   const project = projects.find((p: Project) => p.slug === params.slug);
   if (!project) {
     notFound();
   }
-
   return (
     <main className="px-4 py-12 max-w-4xl mx-auto">
       <ScrollRevealCard {...project} />
