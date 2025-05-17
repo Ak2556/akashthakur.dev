@@ -10,6 +10,9 @@ export default function ContactPage() {
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  // Track which input is focused (for field animation)
+  const [focus, setFocus] = useState<string | null>(null);
+
   const validate = () => {
     const newErrors: typeof errors = {};
     if (!form.name.trim()) newErrors.name = "Name is required";
@@ -62,10 +65,11 @@ export default function ContactPage() {
         )}
 
         <form onSubmit={handleSubmit} noValidate>
+          {/* Name Field */}
           <motion.div
             className="mb-6"
-            initial="unfocused"
-            animate={document?.activeElement?.id === "name" ? "focused" : "unfocused"}
+            animate={focus === "name" ? "focused" : "unfocused"}
+            variants={inputVariants}
           >
             <label htmlFor="name" className="block mb-1 font-semibold">
               Name
@@ -75,15 +79,14 @@ export default function ContactPage() {
               id="name"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              variants={inputVariants}
               className={`w-full rounded-md bg-white/10 border border-white/20 px-4 py-3 placeholder:text-white/50 text-white focus:outline-none transition shadow-sm ${
                 errors.name ? "border-red-500" : ""
               }`}
               placeholder="Your Name"
               aria-invalid={errors.name ? "true" : "false"}
               aria-describedby="name-error"
-              onFocus={(e) => e.currentTarget.parentElement?.setAttribute("data-focused", "true")}
-              onBlur={(e) => e.currentTarget.parentElement?.setAttribute("data-focused", "false")}
+              onFocus={() => setFocus("name")}
+              onBlur={() => setFocus(null)}
             />
             {errors.name && (
               <p id="name-error" className="mt-1 text-sm text-red-500">
@@ -92,7 +95,12 @@ export default function ContactPage() {
             )}
           </motion.div>
 
-          <motion.div className="mb-6" initial="unfocused">
+          {/* Email Field */}
+          <motion.div
+            className="mb-6"
+            animate={focus === "email" ? "focused" : "unfocused"}
+            variants={inputVariants}
+          >
             <label htmlFor="email" className="block mb-1 font-semibold">
               Email
             </label>
@@ -101,13 +109,14 @@ export default function ContactPage() {
               id="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              variants={inputVariants}
               className={`w-full rounded-md bg-white/10 border border-white/20 px-4 py-3 placeholder:text-white/50 text-white focus:outline-none transition shadow-sm ${
                 errors.email ? "border-red-500" : ""
               }`}
               placeholder="your.email@example.com"
               aria-invalid={errors.email ? "true" : "false"}
               aria-describedby="email-error"
+              onFocus={() => setFocus("email")}
+              onBlur={() => setFocus(null)}
             />
             {errors.email && (
               <p id="email-error" className="mt-1 text-sm text-red-500">
@@ -116,10 +125,11 @@ export default function ContactPage() {
             )}
           </motion.div>
 
+          {/* Message Field */}
           <motion.div
             className="mb-8"
-            initial="unfocused"
-            animate={document?.activeElement?.id === "message" ? "focused" : "unfocused"}
+            animate={focus === "message" ? "focused" : "unfocused"}
+            variants={inputVariants}
           >
             <label htmlFor="message" className="block mb-1 font-semibold">
               Message
@@ -128,15 +138,14 @@ export default function ContactPage() {
               id="message"
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}
-              variants={inputVariants}
               className={`w-full rounded-md bg-white/10 border border-white/20 px-4 py-3 placeholder:text-white/50 text-white focus:outline-none transition shadow-sm resize-none min-h-[120px] ${
                 errors.message ? "border-red-500" : ""
               }`}
               placeholder="Write your message here..."
               aria-invalid={errors.message ? "true" : "false"}
               aria-describedby="message-error"
-              onFocus={(e) => e.currentTarget.parentElement?.setAttribute("data-focused", "true")}
-              onBlur={(e) => e.currentTarget.parentElement?.setAttribute("data-focused", "false")}
+              onFocus={() => setFocus("message")}
+              onBlur={() => setFocus(null)}
             />
             {errors.message && (
               <p id="message-error" className="mt-1 text-sm text-red-500">
